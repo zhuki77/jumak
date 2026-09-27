@@ -66,15 +66,22 @@
       font-weight: 800;
     }
     .tabs button.on { background: var(--orange); color: var(--orange-ink); }
-    .acct {
+    .cover-btn {
+      display: flex;
+      width: 100%;
       margin-top: 12px;
-      padding: 12px;
+      min-height: 56px;
+      padding: 12px 14px;
+      justify-content: space-between;
+      align-items: center;
+      border: 0;
       border-radius: 16px;
-      background: #1a2030;
-      border: 1px solid var(--line);
+      background: var(--orange);
+      color: var(--orange-ink);
+      font-weight: 800;
     }
-    .bank { color: var(--muted); font-size: .86rem; font-weight: 700; }
-    .acct-no { display: block; margin-top: 2px; font-size: 1.15rem; letter-spacing: .02em; white-space: nowrap; }
+    .cover-btn.on { box-shadow: inset 0 0 0 2px #1a1008; }
+    .cover-btn span { font-size: .86rem; }
     .copy-btn, .primary, .pay, .ghost, .danger-btn, .zero, .list-btn, .menu-main, .stepper button {
       border: 0;
       border-radius: 12px;
@@ -224,12 +231,7 @@
   <div id="toast" role="status" aria-live="polite"></div>
   <script>
     const STORAGE_KEY = "jumak-festival-pos-v2";
-    const ACCOUNT = {
-      bank: "토스뱅크",
-      number: "1000-3792-2507",
-      holder: "윤제훈",
-      copyText: "토스뱅크 1000-3792-2507 윤제훈"
-    };
+    const COVER_ID = "cover";
     const FESTIVAL_DAYS = [
       { key: "2026-10-01", label: "1일차" },
       { key: "2026-10-02", label: "2일차" }
@@ -252,7 +254,8 @@
       { id: "grapefruit", cat: "drink", name: "자몽 하이볼", desc: "", price: 3900 },
       { id: "lemon", cat: "drink", name: "레몬 하이볼", desc: "", price: 3900 },
       { id: "drink", cat: "drink", name: "음료", desc: "콜라 · 제로콜라 · 사이다", price: 2500, options: ["콜라", "제로콜라", "사이다"] },
-      { id: "water", cat: "drink", name: "생수", desc: "", price: 1000 }
+      { id: "water", cat: "drink", name: "생수", desc: "", price: 1000 },
+      { id: "cover", cat: "fee", name: "상차림비", desc: "", price: 2000 }
     ];
     const CLOUD_APP = "6m8ooszg";
     const CLOUD_ROOT = "https://keyvalue.immanuel.co/api/KeyVal";
@@ -699,32 +702,6 @@
       render();
     }
 
-    function copyAccount() {
-      const done = () => toast("계좌번호를 복사했습니다.");
-      const fail = () => toast("복사에 실패했습니다. 숫자를 길게 눌러 복사해 주세요.");
-      const fallback = () => new Promise((resolve, reject) => {
-        const area = document.createElement("textarea");
-        area.value = ACCOUNT.copyText;
-        area.setAttribute("readonly", "");
-        area.style.position = "fixed";
-        area.style.left = "-9999px";
-        document.body.appendChild(area);
-        area.select();
-        try {
-          document.execCommand("copy") ? resolve() : reject();
-        } catch (err) {
-          reject(err);
-        } finally {
-          area.remove();
-        }
-      });
-      if (navigator.clipboard && window.isSecureContext) {
-        navigator.clipboard.writeText(ACCOUNT.copyText).then(done).catch(() => fallback().then(done).catch(fail));
-        return;
-      }
-      fallback().then(done).catch(fail);
-    }
-
     function menuStats(day) {
       const map = new Map();
       ordersOn(day).forEach((order) => {
@@ -757,15 +734,19 @@
                 <button type="button" data-action="set-day" data-day="${item.key}" class="${item.key === day ? "on" : ""}">${item.label}${item.key === dayKey(Date.now()) ? " · 오늘" : ""}</button>
               `).join("")}
             </div>
-            <div class="acct">
-              <div>
-                <span class="bank">${ACCOUNT.bank} · ${ACCOUNT.holder}</span>
-                <strong class="acct-no">${ACCOUNT.number}</strong>
-              </div>
-              <button type="button" class="copy-btn" data-action="copy">계좌 복사</button>
-            </div>
+            ${renderCover()}
           </div>
         </header>`;
+    }
+
+    function renderCover() {
+      const line = currentDraft().find((item) => item.menuId === COVER_ID);
+      const menu = MENU.find((item) => item.id === COVER_ID);
+      return `
+        <button type="button" class="cover-btn ${line ? "on" : ""}" data-action="add-cover">
+          <span>상차림비${line ? ` · ${line.qty}개 담김` : ""}</span>
+          <strong>${won(menu.price)} 담기</strong>
+        </button>`;
     }
 
     function renderCart() {
@@ -839,12 +820,19 @@
             <article class="rank"><b>${esc(row.label)}</b><strong>${row.qty}개<span>${won(row.amount)}</span></strong></article>
           `).join("")}</div>`;
       }).join("");
+      const cover = counts.get(lineKey(COVER_ID, "")) || { qty: 0, amount: 0 };
+      const coverRow = `
+        <h3 class="done-head">상차림비</h3>
+        <div class="ranks">
+          <article class="rank"><b>상차림비</b><strong>${cover.qty}개<span>${won(cover.amount)}</span></strong></article>
+        </div>`;
       const orders = ordersOn(day);
       const qty = orders.reduce((sum, order) => sum + order.items.reduce((itemSum, item) => itemSum + item.qty, 0), 0);
       const total = orders.reduce((sum, order) => sum + order.total, 0);
       return `
         <h2 class="done-head">메뉴별 판매</h2>
         ${rows}
+        ${coverRow}
         <div class="ranks" style="margin-top:10px">
           <article class="rank total"><b>합계</b><strong>${qty}개<span>${won(total)}</span></strong></article>
         </div>`;
@@ -997,7 +985,10 @@
         ui.confirm = null;
         if (run) run();
         else render();
-      } else if (action === "copy") copyAccount();
+      } else if (action === "add-cover") {
+        addLine(COVER_ID, "");
+        render();
+      }
     }
 
     function onAmount(event) {
