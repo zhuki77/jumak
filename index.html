@@ -10,7 +10,6 @@
   <style>
     :root {
       --bg: #101318;
-      --elev: #181c24;
       --card: #202633;
       --line: #343c4d;
       --text: #f6f3ec;
@@ -19,13 +18,9 @@
       --orange-ink: #1a1008;
       --orange-bg: #2a2018;
       --blue: #2f6fed;
-      --green: #5ee0a0;
-      --green-ink: #052117;
-      --green-bg: #12261c;
       --red: #ff6b6b;
       color-scheme: dark;
     }
-
     * { box-sizing: border-box; }
     html, body { margin: 0; min-height: 100%; }
     body {
@@ -38,11 +33,10 @@
       -webkit-tap-highlight-color: transparent;
     }
     body.modal-open { overflow: hidden; }
-    button, input, textarea { font: inherit; color: inherit; }
+    button, input { font: inherit; color: inherit; }
     button { cursor: pointer; touch-action: manipulation; }
     h1, h2, h3, p { margin: 0; }
-    .wrap { width: min(1180px, calc(100% - 28px)); margin: 0 auto; }
-
+    .wrap { width: min(860px, calc(100% - 28px)); margin: 0 auto; }
     .top {
       position: sticky;
       top: 0;
@@ -52,185 +46,135 @@
       backdrop-filter: blur(14px);
       border-bottom: 1px solid var(--line);
     }
-    .brand-row, .view-head, .k-head, .table-top, .acct, .line, .k-item, .stat-row {
+    .brand-row, .line, .acct, .cart-top, .amount-row, .dock-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
       gap: 12px;
     }
-    .eyebrow { color: var(--orange); font-size: .78rem; font-weight: 800; letter-spacing: .02em; }
+    .eyebrow { color: var(--orange); font-size: .78rem; font-weight: 800; }
     h1 { font-size: 1.22rem; letter-spacing: -.03em; }
-    #clock { color: var(--muted); font-variant-numeric: tabular-nums; font-weight: 700; }
     .sync { margin: 4px 0 0; color: var(--muted); font-size: .82rem; font-weight: 800; }
-    .tabs, .cats { display: flex; gap: 8px; }
-    .tabs { margin: 12px 0; }
-    .tabs button { flex: 1 1 0; padding: 0 6px; }
-    .tabs button, .cats button {
-      flex: 1 0 auto;
-      min-height: 48px;
-      border: 1px solid var(--line);
-      border-radius: 12px;
-      background: #151922;
-      color: var(--muted);
-      font-weight: 800;
-      white-space: nowrap;
-      padding: 0 12px;
-    }
-    .tabs button.on, .cats button.on { background: var(--blue); border-color: var(--blue); color: white; }
-    .tabs em {
-      display: inline-grid;
-      place-items: center;
-      min-width: 22px;
-      height: 22px;
-      margin-left: 6px;
-      padding: 0 6px;
-      border-radius: 999px;
-      background: var(--orange);
-      color: var(--orange-ink);
-      font-style: normal;
-      font-size: .8rem;
-    }
-    .acct {
-      padding: 10px 12px;
+    #clock { color: var(--muted); font-variant-numeric: tabular-nums; font-weight: 700; }
+    .tabs { display: flex; gap: 8px; margin-top: 12px; }
+    .tabs button {
+      flex: 1;
+      min-height: 52px;
+      border: 0;
       border-radius: 14px;
-      background: #171c27;
+      background: #2a3140;
+      font-weight: 800;
+    }
+    .tabs button.on { background: var(--orange); color: var(--orange-ink); }
+    .acct {
+      margin-top: 12px;
+      padding: 12px;
+      border-radius: 16px;
+      background: #1a2030;
       border: 1px solid var(--line);
     }
-    .bank { display: block; color: var(--muted); font-size: .82rem; font-weight: 700; }
-    .acct-no { font-size: 1.28rem; letter-spacing: .04em; user-select: all; white-space: nowrap; }
-    .copy-btn, .primary, .pay, .ghost, .danger-btn, .text-btn, .opts button, .menu-main, .stepper button {
+    .bank { color: var(--muted); font-size: .86rem; font-weight: 700; }
+    .acct-no { display: block; margin-top: 2px; font-size: 1.15rem; letter-spacing: .02em; white-space: nowrap; }
+    .copy-btn, .primary, .pay, .ghost, .danger-btn, .zero, .list-btn, .menu-main, .stepper button {
       border: 0;
       border-radius: 12px;
       font-weight: 800;
     }
-    .copy-btn {
-      min-width: 108px;
+    .copy-btn, .zero, .list-btn {
+      min-width: 72px;
       min-height: 48px;
+      padding: 0 12px;
       background: var(--orange);
       color: var(--orange-ink);
     }
-
-    main.wrap { padding: 16px 0 40px; }
-    .view-head { align-items: flex-end; margin-bottom: 12px; }
+    .list-btn { background: #2a3140; color: var(--text); }
+    main.wrap { padding: 16px 0 120px; }
     h2 { font-size: 1.25rem; }
-    .view-head p, .seat, .hint, .meta, .summary, .desc, .quiet { color: var(--muted); }
-    .legend { display: flex; flex-wrap: wrap; gap: 8px 14px; margin: 0 0 14px; padding: 0; list-style: none; }
-    .legend li { display: flex; align-items: center; gap: 6px; color: var(--muted); font-size: .92rem; font-weight: 700; }
-    .dot { width: 12px; height: 12px; border-radius: 99px; display: inline-block; }
-    .dot.empty { background: #687186; }
-    .dot.active { background: var(--orange); }
-    .dot.dining { background: var(--green); }
-
-    .tables, .kds, .stats, .ranks { display: grid; gap: 12px; }
-    .tables { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    .table {
-      min-height: 148px;
-      padding: 14px;
-      border-radius: 18px;
-      border: 2px solid #3a4254;
-      background: #1c212c;
-      text-align: left;
-      user-select: none;
-      cursor: pointer;
-    }
-    .table:active { transform: scale(.985); }
-    .table.static { cursor: default; }
-    .table.static:active { transform: none; }
-    .guest-link {
-      display: inline-flex;
-      align-items: center;
+    .quiet, .desc { color: var(--muted); }
+    .cats { display: flex; gap: 8px; margin: 12px 0; overflow-x: auto; }
+    .cats button {
+      flex: 1 0 auto;
       min-height: 48px;
-      padding: 0 14px;
+      border: 0;
       border-radius: 12px;
       background: #2a3140;
-      color: var(--text);
       font-weight: 800;
-      text-decoration: none;
       white-space: nowrap;
+      padding: 0 14px;
     }
-    .table.active { background: var(--orange-bg); border-color: var(--orange); }
-    .table.dining { background: var(--green-bg); border-color: var(--green); }
-    .num { font-size: 2rem; line-height: 1; font-variant-numeric: tabular-nums; }
-    .pill, .status {
-      border-radius: 999px;
-      padding: 5px 8px;
-      font-size: .78rem;
-      font-weight: 800;
-      background: #2c3342;
-      color: var(--muted);
-      white-space: nowrap;
-    }
-    .table.active .pill { background: var(--orange); color: var(--orange-ink); }
-    .table.dining .pill { background: var(--green); color: var(--green-ink); }
-    .seat { margin-top: 4px; font-size: .8rem; }
-    .amount { margin-top: 10px; font-size: 1.2rem; font-weight: 800; }
-    .meta, .summary, .hint { margin-top: 4px; font-size: .92rem; }
-    .summary { color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-
-    .kds { grid-template-columns: 1fr; }
-    .k-card {
-      background: var(--card);
-      border: 2px solid var(--line);
-      border-radius: 18px;
-      padding: 14px;
-    }
-    .k-card.waiting { border-color: #f0c14a; }
-    .k-card.cooking { border-color: var(--orange); background: #261c16; }
-    .k-card.served { border-color: #2f6b4e; }
-    .k-card strong.tno { font-size: 1.8rem; }
-    .k-head { align-items: flex-start; margin-bottom: 8px; }
-    .when { color: var(--muted); font-size: .88rem; text-align: right; }
-    .k-item { padding: 10px 0; border-bottom: 1px solid var(--line); font-size: 1.12rem; }
-    .k-item b { font-size: 1.35rem; }
-    .wide { width: 100%; min-height: 56px; margin-top: 12px; }
-    .primary { background: var(--orange); color: var(--orange-ink); }
-    .pay { background: var(--blue); color: white; }
-    .ghost { background: #2a3140; color: var(--text); }
-    .text-btn { width: 100%; min-height: 44px; margin-top: 4px; background: transparent; color: var(--muted); }
-    .done-head { margin: 18px 0 10px; }
-
-    .day-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
-    .day-card {
-      text-align: left;
-      padding: 14px;
+    .cats button.on { background: var(--orange); color: var(--orange-ink); }
+    .menus { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+    .menu {
       border-radius: 16px;
       border: 2px solid var(--line);
       background: var(--card);
-      min-height: 128px;
+      padding: 12px;
     }
-    .day-card.on { border-color: var(--orange); background: var(--orange-bg); }
-    .day-card .day-date { display: block; margin-top: 2px; color: var(--muted); font-size: .88rem; font-weight: 700; }
-    .day-card b { display: block; margin-top: 8px; font-size: 1.35rem; font-variant-numeric: tabular-nums; }
-    .day-card small { display: block; margin-top: 4px; color: var(--muted); font-weight: 700; }
-    .stats { grid-template-columns: 1fr; }
-    .stat, .rank, .panel {
+    .menu.picked { border-color: var(--orange); }
+    .menu-main { width: 100%; min-height: 88px; padding: 0; background: transparent; text-align: left; }
+    .menu-main strong, .menu-main b, .desc { display: block; }
+    .menu-main b { margin-top: 6px; color: var(--orange); }
+    .desc { margin-top: 4px; font-size: .82rem; font-weight: 700; }
+    .opts { display: grid; gap: 8px; margin-top: 8px; }
+    .opts button { min-height: 48px; border: 0; border-radius: 12px; background: #2a3348; color: white; font-weight: 800; }
+    .cart, .panel, .rank {
       background: var(--card);
       border: 1px solid var(--line);
       border-radius: 18px;
-      padding: 16px;
+      padding: 14px;
     }
-    .stat span, .rank span { color: var(--muted); font-weight: 700; }
-    .stat b { display: block; margin-top: 6px; font-size: 1.8rem; font-variant-numeric: tabular-nums; }
-    .ranks { margin-top: 12px; }
+    .cart { margin: 14px 0; display: grid; gap: 12px; }
+    .cart-line { padding-top: 8px; border-top: 1px solid var(--line); }
+    .cart-line:first-of-type { border-top: 0; padding-top: 0; }
+    .stepper { display: flex; align-items: center; gap: 8px; }
+    .stepper button { width: 48px; height: 48px; background: #313a4e; color: white; font-size: 1.4rem; }
+    .stepper b { min-width: 1.4ch; text-align: center; font-size: 1.2rem; }
+    .amount-row { margin-top: 8px; }
+    .amount-input {
+      flex: 1;
+      min-width: 0;
+      min-height: 48px;
+      border-radius: 12px;
+      border: 2px solid var(--line);
+      background: #121722;
+      padding: 0 12px;
+      font-size: 1.15rem;
+      font-weight: 800;
+    }
+    .done-head { margin: 22px 0 10px; }
+    .ranks { display: grid; gap: 10px; }
     .rank { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
-    .rank b { font-size: 1.15rem; }
+    .rank b { font-size: 1.05rem; }
     .rank strong { text-align: right; font-variant-numeric: tabular-nums; }
     .rank strong span { display: block; margin-top: 2px; }
     .rank.total { border-color: var(--orange); }
-    .recent { margin-top: 12px; display: grid; gap: 8px; }
-    .recent li, .bill li, .accepted li { list-style: none; }
-    .recent ul, .bill, .accepted ul, .legend { padding: 0; }
-    .recent li, .bill li {
+    .orders { display: grid; gap: 8px; }
+    .order {
       display: flex;
       justify-content: space-between;
+      align-items: center;
       gap: 10px;
-      padding: 10px 0;
+      padding: 12px 0;
       border-bottom: 1px solid var(--line);
     }
+    .order:last-child { border-bottom: 0; }
+    .text-btn { min-height: 44px; border: 0; background: transparent; color: var(--muted); font-weight: 800; }
     .danger-zone { margin-top: 22px; }
-    .danger-btn { min-height: 56px; background: transparent; color: #ffd4d4; border: 2px solid var(--red); }
-    .empty-box { padding: 28px 8px; color: var(--muted); text-align: center; }
-
+    .danger-btn { width: 100%; min-height: 56px; background: transparent; color: #ffd4d4; border: 2px solid var(--red); }
+    .dock {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 6;
+      padding: 10px 0 calc(10px + env(safe-area-inset-bottom));
+      background: rgba(16, 19, 24, .96);
+      border-top: 1px solid var(--line);
+    }
+    .dock .wrap { display: flex; align-items: center; gap: 12px; }
+    .dock b { display: block; font-size: 1.25rem; }
+    .dock .quiet { font-size: .82rem; font-weight: 700; }
+    .pay { flex: 1; min-height: 56px; background: var(--blue); color: white; }
     .overlay {
       position: fixed;
       inset: 0;
@@ -238,134 +182,40 @@
       display: flex;
       align-items: flex-end;
       justify-content: center;
-      padding: 0;
       background: rgba(0, 0, 0, .62);
-    }
-    .modal, .confirm {
-      width: min(980px, 100%);
-      max-height: 96vh;
-      background: #141820;
-      border: 1px solid var(--line);
-      border-radius: 22px 22px 0 0;
-      box-shadow: 0 24px 60px rgba(0, 0, 0, .45);
-    }
-    .modal { display: flex; flex-direction: column; overflow: hidden; min-height: 0; }
-    .modal-head, .modal-body, .modal-foot { padding: 14px 16px; }
-    .modal-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; border-bottom: 1px solid var(--line); }
-    .modal-head button, .confirm button { min-height: 48px; }
-    .modal-body { overflow: auto; flex: 1; min-height: 0; }
-    .modal-foot { border-top: 1px solid var(--line); background: #10141b; }
-    .cats { position: sticky; top: 0; z-index: 1; margin: 0 0 12px; padding: 8px 0; background: #141820; overflow-x: auto; }
-    .menus { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-    .menu {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      padding: 12px;
-      border-radius: 16px;
-      background: var(--card);
-      border: 2px solid var(--line);
-    }
-    .menu.picked { border-color: var(--orange); }
-    .menu-main {
-      padding: 0;
-      background: transparent;
-      text-align: left;
-      min-height: 92px;
-    }
-    .menu-main strong, .menu-main b { display: block; }
-    .menu-main strong { font-size: 1.05rem; }
-    .menu-main b { margin-top: 6px; color: var(--orange); }
-    .desc { display: block; margin-top: 4px; font-size: .82rem; font-weight: 700; }
-    .opts { display: grid; gap: 8px; }
-    .opts button { min-height: 48px; background: #2a3348; color: white; }
-    .stepper { display: flex; align-items: center; gap: 8px; }
-    .stepper button { width: 48px; height: 48px; background: #313a4e; color: white; font-size: 1.4rem; }
-    .stepper b { min-width: 1.2ch; text-align: center; font-size: 1.2rem; }
-    .step-row, .step-block { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
-    .step-block { margin-top: 8px; align-items: flex-start; flex-direction: column; }
-    .ticket {
-      margin-bottom: 10px;
-      padding: 12px;
-      border-radius: 14px;
-      background: #1a2030;
-      border: 1px solid var(--line);
-    }
-    .ticket .line { padding: 8px 0; }
-    .totals { margin: 8px 0 12px; }
-    .totals .grand { font-size: 1.45rem; font-weight: 900; }
-    .draft-list { max-height: 260px; overflow: auto; margin-bottom: 8px; }
-    .tag {
-      display: inline-block;
-      margin-left: 6px;
-      padding: 2px 8px;
-      border-radius: 999px;
-      background: #ffe08a;
-      color: #2a2108;
-      font-style: normal;
-      font-size: .78rem;
-      font-weight: 800;
-    }
-    .rank small { display: block; margin-top: 2px; color: var(--muted); font-size: .8rem; font-weight: 700; }
-    .draft-list .line { padding: 6px 0; }
-    .pay-box {
-      margin-top: 14px;
       padding: 16px;
-      border-radius: 16px;
-      background: #182033;
-      border: 1px solid #35508d;
     }
-    .pay-box .acct-no { font-size: 1.7rem; }
-    .warn {
-      margin-bottom: 10px;
-      padding: 12px;
-      border-radius: 12px;
-      background: #3a2a12;
-      color: #ffd18a;
-      font-weight: 800;
+    .confirm {
+      width: min(480px, 100%);
+      padding: 18px;
+      border-radius: 20px;
+      background: #1b212c;
+      border: 1px solid var(--line);
     }
-    .foot-actions { display: flex; flex-direction: column; gap: 8px; }
-    .foot-actions button { width: 100%; }
-    .confirm-overlay { z-index: 40; align-items: center; padding: 16px; }
-    .confirm { width: min(440px, 100%); padding: 18px; border-radius: 18px; }
-    .confirm p { margin: 10px 0 16px; color: var(--muted); line-height: 1.45; }
+    .confirm p { margin: 10px 0 16px; color: var(--muted); font-weight: 700; line-height: 1.45; }
     .confirm-actions { display: flex; gap: 8px; }
-    .confirm-actions button { flex: 1; }
+    .confirm-actions button { flex: 1; min-height: 52px; }
+    .ghost { background: #2a3140; color: var(--text); }
     #toast {
       position: fixed;
       left: 50%;
-      bottom: 24px;
-      z-index: 80;
+      bottom: 96px;
+      z-index: 30;
       max-width: calc(100% - 32px);
       padding: 14px 18px;
       border-radius: 999px;
       background: #fff6e8;
       color: #1a1008;
       font-weight: 800;
-      text-align: center;
       opacity: 0;
       pointer-events: none;
       transform: translateX(-50%) translateY(12px);
       transition: .2s ease;
     }
     #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-
     @media (min-width: 720px) {
-      .overlay { align-items: center; padding: 18px; }
-      .modal { border-radius: 22px; max-height: min(920px, 92vh); }
       .menus { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-      .tables { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-      .kds, .stats, .ranks { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-      .foot-actions { flex-direction: row; }
-      .foot-actions .pay { flex: 1.4; }
-    }
-    @media (min-width: 980px) {
-      .tables { grid-template-columns: repeat(5, minmax(0, 1fr)); }
-      .kds { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-      .stats { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-    }
-    @media (prefers-reduced-motion: reduce) {
-      * { transition: none !important; }
+      .overlay { align-items: center; }
     }
   </style>
 </head>
@@ -373,14 +223,17 @@
   <div id="app"></div>
   <div id="toast" role="status" aria-live="polite"></div>
   <script>
-    const STORAGE_KEY = "jumak-festival-pos-v1";
-    const TABLE_COUNT = 15;
+    const STORAGE_KEY = "jumak-festival-pos-v2";
     const ACCOUNT = {
       bank: "토스뱅크",
       number: "1000-3792-2507",
       holder: "윤제훈",
       copyText: "토스뱅크 1000-3792-2507 윤제훈"
     };
+    const FESTIVAL_DAYS = [
+      { key: "2026-10-01", label: "1일차" },
+      { key: "2026-10-02", label: "2일차" }
+    ];
     const CATEGORIES = [
       { id: "skewer", name: "꼬치류" },
       { id: "meal", name: "탕·식사·사이드" },
@@ -401,127 +254,116 @@
       { id: "drink", cat: "drink", name: "음료", desc: "콜라 · 제로콜라 · 사이다", price: 2500, options: ["콜라", "제로콜라", "사이다"] },
       { id: "water", cat: "drink", name: "생수", desc: "", price: 1000 }
     ];
-
-    const GUEST = new URLSearchParams(location.search).has("guest");
     const CLOUD_APP = "6m8ooszg";
     const CLOUD_ROOT = "https://keyvalue.immanuel.co/api/KeyVal";
+
     let localOps = [];
     let syncedSet = new Set();
     let seenN = 0;
     let seenLast = "";
-    let state = { tickets: [], sales: [] };
+    let state = { orders: [] };
     let syncLabel = "연결하는 중";
-    let online = false;
     let chain = Promise.resolve();
-    const FESTIVAL_DAYS = [
-      { key: "2026-10-01", label: "1일차" },
-      { key: "2026-10-02", label: "2일차" }
-    ];
-    const ui = { view: "hall", modal: null, confirm: null, showDone: false, salesDay: "" };
     let toastTimer = 0;
+    const ui = {
+      day: "",
+      cat: "skewer",
+      optionFor: "",
+      drafts: { "2026-10-01": [], "2026-10-02": [] },
+      confirm: null
+    };
 
     function uid() {
       return Math.random().toString(36).slice(2, 8) + Date.now().toString(36).slice(-4);
     }
 
-    function slimItem(item) {
-      return {
-        menuId: item.menuId,
-        price: item.price,
-        qty: paidQty(item),
-        serviceQty: freeQty(item),
-        option: item.option || ""
-      };
+    function dayKey(ts) {
+      const date = new Date(ts);
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const day = String(date.getDate()).padStart(2, "0");
+      return `${date.getFullYear()}-${month}-${day}`;
     }
 
-    function fatItem(item) {
+    function dayTitle(key) {
+      const [year, month, day] = key.split("-").map(Number);
+      return new Date(year, month - 1, day).toLocaleDateString("ko-KR", { month: "long", day: "numeric", weekday: "short" });
+    }
+
+    function activeDay() {
+      if (FESTIVAL_DAYS.some((day) => day.key === ui.day)) return ui.day;
+      const today = dayKey(Date.now());
+      return today >= "2026-10-02" ? "2026-10-02" : "2026-10-01";
+    }
+
+    function won(amount) {
+      return `${Number(amount || 0).toLocaleString("ko-KR")}원`;
+    }
+
+    function hhmm(ts) {
+      return new Date(ts).toLocaleTimeString("ko-KR", { hour: "2-digit", minute: "2-digit" });
+    }
+
+    function esc(value) {
+      return String(value ?? "").replace(/[&<>"']/g, (ch) => ({
+        "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+      }[ch]));
+    }
+
+    function lineKey(menuId, option) {
+      return `${menuId}|${option || ""}`;
+    }
+
+    function itemLabel(item) {
+      return item.option ? `${item.name} (${item.option})` : item.name;
+    }
+
+    function hydrate(item) {
       const menu = MENU.find((entry) => entry.id === item.menuId);
       return {
         menuId: item.menuId,
-        name: menu ? menu.name : (item.name || item.menuId),
-        price: item.price,
+        name: menu ? menu.name : item.menuId,
+        option: item.option || "",
         qty: item.qty || 0,
-        serviceQty: item.serviceQty || 0,
-        option: item.option || ""
+        price: menu ? menu.price : 0,
+        amount: item.amount || 0
       };
     }
 
     function replay(ops) {
-      const next = { tickets: [], sales: [] };
+      const orders = [];
       ops.forEach((op) => {
         if (!op || !op.kind) return;
         if (op.kind === "R") {
-          next.tickets = [];
-          next.sales = [];
+          orders.length = 0;
           return;
         }
         if (op.kind === "O") {
-          const items = (op.items || []).map(fatItem);
-          const saleItems = items.map((item) => ({ ...item }));
-          next.tickets.push({
-            id: op.ticketId,
-            table: op.table,
-            status: op.status || "waiting",
-            createdAt: op.at,
-            updatedAt: op.at,
-            items
+          const items = (op.items || []).map(hydrate);
+          orders.push({
+            id: op.id,
+            day: op.day,
+            at: op.at,
+            items,
+            total: items.reduce((sum, item) => sum + (item.amount || 0), 0)
           });
-          next.sales.push({
-            id: op.saleId,
-            table: op.table,
-            ticketId: op.ticketId,
-            items: saleItems,
-            total: op.total,
-            paidAt: op.at,
-            orderTimes: [op.at]
-          });
-        } else if (op.kind === "S") {
-          const ticket = next.tickets.find((item) => item.id === op.ticketId);
-          if (ticket) {
-            ticket.status = op.status;
-            ticket.updatedAt = op.at;
-          }
-        } else if (op.kind === "C") {
-          next.tickets = next.tickets.filter((ticket) => ticket.table !== op.table);
         } else if (op.kind === "X") {
-          next.tickets = next.tickets.filter((ticket) => ticket.id !== op.ticketId);
-          next.sales = next.sales.filter((sale) => sale.id !== op.saleId);
+          const index = orders.findIndex((order) => order.id === op.orderId);
+          if (index >= 0) orders.splice(index, 1);
         }
       });
-      return next;
+      return { orders };
     }
 
     function loadBundle() {
       try {
-        const raw = localStorage.getItem(STORAGE_KEY);
-        if (!raw) return { ops: [], synced: [], headN: 0, headLast: "" };
-        const data = JSON.parse(raw);
-        if (data && Array.isArray(data.ops)) {
-          return {
-            ops: data.ops,
-            synced: Array.isArray(data.synced) ? data.synced : [],
-            headN: data.headN || 0,
-            headLast: data.headLast || ""
-          };
-        }
-        const ops = [];
-        if (data && Array.isArray(data.tickets)) {
-          data.tickets.forEach((ticket) => {
-            const sale = (data.sales || []).find((item) => item.ticketId === ticket.id);
-            ops.push({
-              kind: "O",
-              id: uid(),
-              ticketId: ticket.id,
-              saleId: sale ? sale.id : uid(),
-              table: ticket.table,
-              at: ticket.createdAt || Date.now(),
-              total: sale ? sale.total : 0,
-              status: ticket.status || "waiting",
-              items: (ticket.items || []).map(slimItem)
-            });
-          });
-        }
-        return { ops, synced: [], headN: 0, headLast: "" };
+        const data = JSON.parse(localStorage.getItem(STORAGE_KEY) || "null");
+        if (!data || !Array.isArray(data.ops)) return { ops: [], synced: [], headN: 0, headLast: "" };
+        return {
+          ops: data.ops,
+          synced: Array.isArray(data.synced) ? data.synced : [],
+          headN: data.headN || 0,
+          headLast: data.headLast || ""
+        };
       } catch (err) {
         return { ops: [], synced: [], headN: 0, headLast: "" };
       }
@@ -538,6 +380,15 @@
       } catch (err) {
         toast("이 브라우저에는 주문을 저장할 수 없습니다.");
       }
+    }
+
+    function rememberBundle() {
+      const bundle = loadBundle();
+      localOps = bundle.ops;
+      syncedSet = new Set(bundle.synced);
+      seenN = bundle.headN;
+      seenLast = bundle.headLast;
+      state = replay(localOps);
     }
 
     function bytesToB64url(bytes) {
@@ -588,27 +439,25 @@
 
     async function putBlob(id, text) {
       const parts = splitUtf8(text, 80);
-      await cloudPut("o" + id, parts.length + "|" + parts[0]);
-      for (let i = 1; i < parts.length; i++) await cloudPut("o" + id + "x" + i, parts[i]);
+      await cloudPut("n" + id, parts.length + "|" + parts[0]);
+      for (let i = 1; i < parts.length; i++) await cloudPut("n" + id + "x" + i, parts[i]);
     }
 
     async function getBlob(id) {
-      const first = await cloudGet("o" + id);
+      const first = await cloudGet("n" + id);
       const bar = first.indexOf("|");
       const count = Number(first.slice(0, bar));
       let text = first.slice(bar + 1);
-      for (let i = 1; i < count; i++) text += await cloudGet("o" + id + "x" + i);
+      for (let i = 1; i < count; i++) text += await cloudGet("n" + id + "x" + i);
       return text;
     }
 
     function serialize(op) {
       if (op.kind === "O") {
-        const items = op.items.map((item) => [item.menuId, item.price, item.qty, item.serviceQty || 0, item.option || ""].join(",")).join(";");
-        return ["O", op.ticketId, op.saleId, op.table, op.at, op.total, op.status || "waiting", items].join("|");
+        const items = op.items.map((item) => [item.menuId, item.qty, item.amount, item.option || ""].join(",")).join(";");
+        return ["O", op.day, op.at, items].join("|");
       }
-      if (op.kind === "S") return ["S", op.ticketId, op.status, op.at].join("|");
-      if (op.kind === "C") return ["C", op.table, op.at].join("|");
-      if (op.kind === "X") return ["X", op.ticketId, op.saleId].join("|");
+      if (op.kind === "X") return ["X", op.orderId].join("|");
       if (op.kind === "R") return ["R", op.epoch].join("|");
       return "";
     }
@@ -616,36 +465,24 @@
     function parseOp(text) {
       const parts = String(text || "").split("|");
       if (parts[0] === "O") {
-        const items = (parts[7] || "").split(";").filter(Boolean).map((row) => {
+        const items = (parts.slice(3).join("|") || "").split(";").filter(Boolean).map((row) => {
           const cols = row.split(",");
           return {
             menuId: cols[0],
-            price: Number(cols[1]) || 0,
-            qty: Number(cols[2]) || 0,
-            serviceQty: Number(cols[3]) || 0,
-            option: cols.slice(4).join(",")
+            qty: Number(cols[1]) || 0,
+            amount: Number(cols[2]) || 0,
+            option: cols.slice(3).join(",")
           };
         });
-        return {
-          kind: "O",
-          ticketId: parts[1],
-          saleId: parts[2],
-          table: Number(parts[3]) || 0,
-          at: Number(parts[4]) || 0,
-          total: Number(parts[5]) || 0,
-          status: parts[6] || "waiting",
-          items
-        };
+        return { kind: "O", day: parts[1], at: Number(parts[2]) || 0, items };
       }
-      if (parts[0] === "S") return { kind: "S", ticketId: parts[1], status: parts[2], at: Number(parts[3]) || 0 };
-      if (parts[0] === "C") return { kind: "C", table: Number(parts[1]) || 0, at: Number(parts[2]) || 0 };
-      if (parts[0] === "X") return { kind: "X", ticketId: parts[1], saleId: parts[2] };
+      if (parts[0] === "X") return { kind: "X", orderId: parts[1] };
       if (parts[0] === "R") return { kind: "R", epoch: Number(parts[1]) || 0 };
       return null;
     }
 
     async function readHead() {
-      const raw = await cloudGet("head");
+      const raw = await cloudGet("h2");
       if (!raw) return { page: 0, n: 0, last: "" };
       const data = JSON.parse(raw);
       return { page: Number(data.page) || 0, n: Number(data.n) || 0, last: data.last || "" };
@@ -655,7 +492,7 @@
       if (!head.n) return [];
       const ids = [];
       for (let page = 0; page <= head.page; page++) {
-        const text = await cloudGet("p" + page);
+        const text = await cloudGet("g" + page);
         if (text) ids.push(...text.split(",").filter(Boolean));
       }
       return ids;
@@ -665,7 +502,7 @@
       for (let attempt = 0; attempt < 8; attempt++) {
         const head = await readHead();
         if (head.last === id) return head;
-        const pageText = head.n ? await cloudGet("p" + head.page) : "";
+        const pageText = head.n ? await cloudGet("g" + head.page) : "";
         const pageIds = pageText ? pageText.split(",").filter(Boolean) : [];
         if (pageIds.includes(id)) return head;
         if (attempt > 0) {
@@ -678,9 +515,9 @@
           page += 1;
           list = [id];
         }
-        await cloudPut("p" + page, list.join(","));
+        await cloudPut("g" + page, list.join(","));
         const next = { page, n: head.n + 1, last: id };
-        await cloudPut("head", JSON.stringify(next));
+        await cloudPut("h2", JSON.stringify(next));
         const check = await readHead();
         if (check.last === id) return check;
         await new Promise((resolve) => setTimeout(resolve, 150 * (attempt + 1)));
@@ -699,7 +536,6 @@
     }
 
     async function pushPending() {
-      if (GUEST) return;
       const pending = localOps.filter((op) => op && op.id && !syncedSet.has(op.id));
       if (!pending.length) return;
       syncLabel = "저장하는 중";
@@ -711,7 +547,6 @@
         seenN = head.n;
         seenLast = head.last;
       }
-      online = true;
       syncLabel = "다른 기기와 연결됨";
       saveLocal();
       paintSync();
@@ -719,7 +554,6 @@
 
     async function pull() {
       const head = await readHead();
-      online = true;
       if (!head.n && !localOps.length) {
         syncLabel = "다른 기기와 연결됨";
         paintSync();
@@ -749,12 +583,12 @@
       ids.forEach((id) => syncedSet.add(id));
       seenN = head.n;
       seenLast = head.last;
-      const before = JSON.stringify(state.tickets) + JSON.stringify(state.sales);
+      const before = JSON.stringify(state.orders);
       state = replay(localOps);
       saveLocal();
       syncLabel = "다른 기기와 연결됨";
-      const after = JSON.stringify(state.tickets) + JSON.stringify(state.sales);
-      if (before !== after) render();
+      const typing = document.activeElement && document.activeElement.dataset && document.activeElement.dataset.amount;
+      if (!typing && before !== JSON.stringify(state.orders)) render();
       else paintSync();
     }
 
@@ -762,177 +596,7 @@
       localOps.push(op);
       state = replay(localOps);
       saveLocal();
-      if (!GUEST) enqueue(() => pushPending());
-    }
-
-    function rememberBundle() {
-      const bundle = loadBundle();
-      localOps = bundle.ops;
-      syncedSet = new Set(bundle.synced);
-      seenN = bundle.headN;
-      seenLast = bundle.headLast;
-      state = replay(localOps);
-    }
-
-    rememberBundle();
-
-    function esc(value) {
-      return String(value ?? "").replace(/[&<>"']/g, (ch) => ({
-        "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
-      }[ch]));
-    }
-
-    function won(amount) {
-      return `${Number(amount || 0).toLocaleString("ko-KR")}원`;
-    }
-
-    function hhmm(ts) {
-      return new Date(ts).toLocaleTimeString("ko-KR", { hour: "2-digit", minute: "2-digit" });
-    }
-
-    function elapsedLabel(ts) {
-      const sec = Math.max(0, Math.floor((Date.now() - ts) / 1000));
-      const min = Math.floor(sec / 60);
-      const hour = Math.floor(min / 60);
-      if (hour > 0) return `경과 ${hour}시간 ${min % 60}분`;
-      if (min > 0) return `경과 ${min}분`;
-      return `경과 ${sec}초`;
-    }
-
-    function dayKey(ts) {
-      const date = new Date(ts);
-      const month = String(date.getMonth() + 1).padStart(2, "0");
-      const day = String(date.getDate()).padStart(2, "0");
-      return `${date.getFullYear()}-${month}-${day}`;
-    }
-
-    function dayTitle(key) {
-      const [year, month, day] = key.split("-").map(Number);
-      return new Date(year, month - 1, day).toLocaleDateString("ko-KR", { month: "long", day: "numeric", weekday: "short" });
-    }
-
-    function itemLabel(item) {
-      return item.option ? `${item.name} (${item.option})` : item.name;
-    }
-
-    function draftKey(menuId, option) {
-      return `${menuId}|${option || ""}`;
-    }
-
-    function ticketsFor(table) {
-      return state.tickets.filter((ticket) => ticket.table === table);
-    }
-
-    function paidQty(item) {
-      return item.qty || 0;
-    }
-
-    function freeQty(item) {
-      return item.serviceQty || 0;
-    }
-
-    function ticketTotal(ticket) {
-      return ticket.items.reduce((sum, item) => sum + item.price * paidQty(item), 0);
-    }
-
-    function ticketServiceAmount(ticket) {
-      return ticket.items.reduce((sum, item) => sum + item.price * freeQty(item), 0);
-    }
-
-    function tableTotal(table) {
-      return ticketsFor(table).reduce((sum, ticket) => sum + ticketTotal(ticket), 0);
-    }
-
-    function tableServiceAmount(table) {
-      return ticketsFor(table).reduce((sum, ticket) => sum + ticketServiceAmount(ticket), 0);
-    }
-
-    function tableOpenedAt(table) {
-      const times = ticketsFor(table).map((ticket) => ticket.createdAt);
-      return times.length ? Math.min(...times) : 0;
-    }
-
-    function phase(table) {
-      const list = ticketsFor(table);
-      if (!list.length) return "empty";
-      if (list.some((ticket) => ticket.status === "waiting" || ticket.status === "cooking")) return "active";
-      return "dining";
-    }
-
-    function phaseLabel(table) {
-      const list = ticketsFor(table);
-      if (!list.length) return "빈 테이블";
-      if (list.some((ticket) => ticket.status === "cooking")) return "조리 중";
-      if (list.some((ticket) => ticket.status === "waiting")) return "조리 대기";
-      return "식사 중";
-    }
-
-    function statusLabel(status) {
-      if (status === "cooking") return "조리 중";
-      if (status === "served") return "서빙 완료";
-      return "조리 대기";
-    }
-
-    function mergeItems(items) {
-      const map = new Map();
-      items.forEach((item) => {
-        const key = draftKey(item.menuId, item.option);
-        const found = map.get(key);
-        if (found) {
-          found.qty += paidQty(item);
-          found.serviceQty += freeQty(item);
-        } else {
-          map.set(key, {
-            menuId: item.menuId,
-            name: item.name,
-            price: item.price,
-            qty: paidQty(item),
-            serviceQty: freeQty(item),
-            option: item.option || ""
-          });
-        }
-      });
-      return [...map.values()];
-    }
-
-    function shortSummary(table) {
-      const items = mergeItems(ticketsFor(table).flatMap((ticket) => ticket.items));
-      if (!items.length) return "";
-      const names = items.slice(0, 2).map(itemLabel).join(", ");
-      return items.length > 2 ? `${names} 외 ${items.length - 2}` : names;
-    }
-
-    function salesOn(key) {
-      return state.sales.filter((sale) => dayKey(sale.paidAt) === key);
-    }
-
-    function serviceQtyOf(sales) {
-      return sales.reduce((sum, sale) => sum + sale.items.reduce((itemSum, item) => itemSum + freeQty(item), 0), 0);
-    }
-
-    function soldQtyOf(sales) {
-      return sales.reduce((sum, sale) => sum + sale.items.reduce((itemSum, item) => itemSum + paidQty(item) + freeQty(item), 0), 0);
-    }
-
-    function orderedQtyMap(sales) {
-      const map = new Map();
-      sales.forEach((sale) => {
-        sale.items.forEach((item) => {
-          const key = draftKey(item.menuId, item.option);
-          const prev = map.get(key) || { ordered: 0, service: 0, amount: 0 };
-          prev.ordered += paidQty(item) + freeQty(item);
-          prev.service += freeQty(item);
-          prev.amount += item.price * paidQty(item);
-          map.set(key, prev);
-        });
-      });
-      return map;
-    }
-
-    function activeSalesDay() {
-      if (FESTIVAL_DAYS.some((day) => day.key === ui.salesDay)) return ui.salesDay;
-      const today = dayKey(Date.now());
-      return FESTIVAL_DAYS.some((day) => day.key === today) ? today : FESTIVAL_DAYS[0].key;
+      enqueue(() => pushPending());
     }
 
     function toast(message) {
@@ -943,189 +607,96 @@
       toastTimer = setTimeout(() => el.classList.remove("show"), 1800);
     }
 
-    function openTable(table) {
-      if (GUEST) return;
-      ui.modal = { table, mode: "order", cat: "skewer", draft: [], optionFor: "" };
-      ui.confirm = null;
-      render();
+    function currentDraft() {
+      const day = activeDay();
+      if (!ui.drafts[day]) ui.drafts[day] = [];
+      return ui.drafts[day];
     }
 
-    function addDraft(menuId, option) {
+    function cartTotal() {
+      return currentDraft().reduce((sum, line) => sum + (Number(line.amount) || 0), 0);
+    }
+
+    function ordersOn(day) {
+      return state.orders.filter((order) => order.day === day);
+    }
+
+    function addLine(menuId, option) {
       const menu = MENU.find((item) => item.id === menuId);
-      if (!menu || !ui.modal) return;
-      const key = draftKey(menuId, option);
-      const line = ui.modal.draft.find((item) => item.key === key);
+      if (!menu) return;
+      const key = lineKey(menuId, option);
+      const draft = currentDraft();
+      const line = draft.find((item) => item.key === key);
       if (line) {
-        if (line.qty < 99) line.qty += 1;
+        if (line.qty >= 99) return;
+        line.qty += 1;
+        if (!line.custom) line.amount = line.price * line.qty;
         return;
       }
-      ui.modal.draft.push({ key, menuId: menu.id, name: menu.name, price: menu.price, qty: 1, serviceQty: 0, option: option || "" });
-    }
-
-    function changeDraft(key, field, delta) {
-      const line = ui.modal.draft.find((item) => item.key === key);
-      if (!line) return;
-      const next = Math.min(99, Math.max(0, (line[field] || 0) + delta));
-      line[field] = next;
-      if (paidQty(line) + freeQty(line) <= 0) ui.modal.draft = ui.modal.draft.filter((item) => item !== line);
-      render();
-    }
-
-    function draftPaidTotal() {
-      return ui.modal.draft.reduce((sum, item) => sum + item.price * paidQty(item), 0);
-    }
-
-    function draftServiceAmount() {
-      return ui.modal.draft.reduce((sum, item) => sum + item.price * freeQty(item), 0);
-    }
-
-    function acceptOrder() {
-      if (!ui.modal) return;
-      const draft = ui.modal.draft.filter((item) => paidQty(item) + freeQty(item) > 0);
-      if (!draft.length) return;
-      const table = ui.modal.table;
-      const createdAt = Date.now();
-      const ticketId = uid();
-      const items = draft.map((item) => ({
-        menuId: item.menuId,
-        name: item.name,
-        price: item.price,
-        qty: paidQty(item),
-        serviceQty: freeQty(item),
-        option: item.option || ""
-      }));
-      const total = items.reduce((sum, item) => sum + item.price * item.qty, 0);
-      commit({
-        kind: "O",
-        id: uid(),
-        ticketId,
-        saleId: uid(),
-        table,
-        at: createdAt,
-        total,
-        status: "waiting",
-        items: draft.map(slimItem)
+      draft.push({
+        key,
+        menuId: menu.id,
+        name: menu.name,
+        option: option || "",
+        price: menu.price,
+        qty: 1,
+        amount: menu.price,
+        custom: false
       });
-      ui.modal = null;
-      ui.confirm = null;
-      toast(total > 0 ? `${table}번 ${won(total)} 선결제 후 접수했습니다.` : `${table}번 서비스 주문을 접수했습니다.`);
-      render();
     }
 
-    function requestPay() {
-      if (!ui.modal) return;
-      const total = draftPaidTotal();
-      const service = draftServiceAmount();
-      if (total <= 0) {
-        requestServiceOrder();
+    function changeQty(key, delta) {
+      const draft = currentDraft();
+      const line = draft.find((item) => item.key === key);
+      if (!line) return;
+      line.qty = Math.min(99, line.qty + delta);
+      if (line.qty <= 0) {
+        ui.drafts[activeDay()] = draft.filter((item) => item !== line);
         return;
       }
-      const table = ui.modal.table;
-      ui.confirm = {
-        title: `${table}번 선결제`,
-        message: `${won(total)}을 받았습니다. 확인하면 주방에 바로 전달되고 테이블은 그대로 유지됩니다.${service ? ` 서비스 ${won(service)}은 매출에 포함되지 않습니다.` : ""}`,
-        yes: "결제 완료 · 주문 접수",
-        danger: false,
-        onYes: acceptOrder
-      };
+      if (!line.custom) line.amount = line.price * line.qty;
+    }
+
+    function setAmount(key, amount, custom) {
+      const line = currentDraft().find((item) => item.key === key);
+      if (!line) return;
+      line.amount = Math.max(0, Math.min(9999999, Math.floor(Number(amount) || 0)));
+      line.custom = custom;
+      if (!custom) line.amount = line.price * line.qty;
+    }
+
+    function submitOrder() {
+      const draft = currentDraft().filter((line) => line.qty > 0);
+      if (!draft.length) return;
+      const day = activeDay();
+      const items = draft.map((line) => ({
+        menuId: line.menuId,
+        qty: line.qty,
+        amount: Number(line.amount) || 0,
+        option: line.option || ""
+      }));
+      commit({ kind: "O", id: uid(), day, at: Date.now(), items });
+      ui.drafts[day] = [];
+      ui.confirm = null;
+      const total = items.reduce((sum, item) => sum + item.amount, 0);
+      toast(`${FESTIVAL_DAYS.find((item) => item.key === day).label}에 ${won(total)}을 접수했습니다.`);
       render();
     }
 
-    function requestServiceOrder() {
-      if (!ui.modal) return;
-      const table = ui.modal.table;
-      const count = ui.modal.draft.reduce((sum, item) => sum + freeQty(item), 0);
-      ui.confirm = {
-        title: `${table}번 서비스 주문`,
-        message: `유료 결제 없이 ${count}개를 서비스로 주방에 보냅니다. 매출에는 포함되지 않습니다.`,
-        yes: "주문 접수",
-        danger: false,
-        onYes: acceptOrder
-      };
-      render();
-    }
-
-    function requestClear() {
-      if (!ui.modal) return;
-      const table = ui.modal.table;
-      ui.confirm = {
-        title: `${table}번 테이블 비우기`,
-        message: "손님 퇴장으로 테이블만 비웁니다. 이미 받은 선결제 매출은 그대로 남습니다.",
-        yes: "테이블 비우기",
-        danger: false,
-        onYes: () => {
-          commit({ kind: "C", id: uid(), table, at: Date.now() });
-          ui.modal = null;
-          ui.confirm = null;
-          toast(`${table}번 테이블을 비웠습니다.`);
-          render();
-        }
-      };
-      render();
-    }
-
-    function requestCancel(ticketId) {
-      const ticket = state.tickets.find((item) => item.id === ticketId);
-      if (!ticket || ticket.status !== "waiting") return;
-      ui.confirm = {
-        title: `${ticket.table}번 접수 취소`,
-        message: "조리 전 주문입니다. 취소하면 이 선결제 매출도 함께 빠집니다.",
-        yes: "접수 취소",
-        danger: true,
-        onYes: () => {
-          const sale = state.sales.find((item) => item.ticketId === ticketId);
-          commit({ kind: "X", id: uid(), ticketId, saleId: sale ? sale.id : "" });
-          ui.confirm = null;
-          toast("선결제 주문을 취소했습니다.");
-          render();
-        }
-      };
-      render();
-    }
-
-    function advanceTicket(id) {
-      const ticket = state.tickets.find((item) => item.id === id);
-      if (!ticket) return;
-      const status = ticket.status === "waiting" ? "cooking" : "served";
-      if (ticket.status !== "waiting" && ticket.status !== "cooking") return;
-      commit({ kind: "S", id: uid(), ticketId: id, status, at: Date.now() });
-      render();
-    }
-
-    function backTicket(id) {
-      const ticket = state.tickets.find((item) => item.id === id);
-      if (!ticket) return;
-      const status = ticket.status === "served" ? "cooking" : "waiting";
-      if (ticket.status !== "served" && ticket.status !== "cooking") return;
-      commit({ kind: "S", id: uid(), ticketId: id, status, at: Date.now() });
-      render();
-    }
-
-    function requestReset() {
-      ui.confirm = {
-        title: "전체 초기화",
-        message: "테이블 주문, 주방 목록, 매출 내역이 모두 삭제됩니다. 삭제한 데이터는 되돌릴 수 없습니다.",
-        yes: "전체 삭제",
-        danger: true,
-        onYes: resetAll
-      };
+    function cancelOrder(orderId) {
+      commit({ kind: "X", id: uid(), orderId });
+      ui.confirm = null;
+      toast("접수를 취소했습니다.");
       render();
     }
 
     function resetAll() {
       localOps = localOps.filter((op) => syncedSet.has(op.id));
       commit({ kind: "R", id: uid(), epoch: Date.now() });
-      ui.modal = null;
+      ui.drafts = { "2026-10-01": [], "2026-10-02": [] };
       ui.confirm = null;
       toast("전체 데이터를 초기화했습니다.");
       render();
-    }
-
-    function confirmYes() {
-      const action = ui.confirm && ui.confirm.onYes;
-      ui.confirm = null;
-      if (action) action();
-      else render();
     }
 
     function copyAccount() {
@@ -1154,8 +725,22 @@
       fallback().then(done).catch(fail);
     }
 
+    function menuStats(day) {
+      const map = new Map();
+      ordersOn(day).forEach((order) => {
+        order.items.forEach((item) => {
+          const key = lineKey(item.menuId, item.option);
+          const prev = map.get(key) || { qty: 0, amount: 0 };
+          prev.qty += item.qty;
+          prev.amount += item.amount;
+          map.set(key, prev);
+        });
+      });
+      return map;
+    }
+
     function renderHeader() {
-      const kitchenCount = state.tickets.filter((ticket) => ticket.status !== "served").length;
+      const day = activeDay();
       return `
         <header class="top">
           <div class="wrap">
@@ -1167,330 +752,125 @@
               </div>
               <time id="clock">${esc(hhmm(Date.now()))}</time>
             </div>
-            ${GUEST ? "" : `
-            <nav class="tabs" aria-label="화면 전환">
-              <button type="button" data-action="nav" data-view="hall" class="${ui.view === "hall" ? "on" : ""}">홀 현황</button>
-              <button type="button" data-action="nav" data-view="kitchen" class="${ui.view === "kitchen" ? "on" : ""}">주방·서빙${kitchenCount ? `<em>${kitchenCount}</em>` : ""}</button>
-              <button type="button" data-action="nav" data-view="sales" class="${ui.view === "sales" ? "on" : ""}">매출 통계</button>
-            </nav>
+            <div class="tabs" role="tablist" aria-label="일차">
+              ${FESTIVAL_DAYS.map((item) => `
+                <button type="button" data-action="set-day" data-day="${item.key}" class="${item.key === day ? "on" : ""}">${item.label}${item.key === dayKey(Date.now()) ? " · 오늘" : ""}</button>
+              `).join("")}
+            </div>
             <div class="acct">
               <div>
                 <span class="bank">${ACCOUNT.bank} · ${ACCOUNT.holder}</span>
                 <strong class="acct-no">${ACCOUNT.number}</strong>
               </div>
               <button type="button" class="copy-btn" data-action="copy">계좌 복사</button>
-            </div>`}
+            </div>
           </div>
         </header>`;
     }
 
-    function renderTable(n) {
-      const kind = phase(n);
-      const opened = tableOpenedAt(n);
-      if (GUEST) {
+    function renderCart() {
+      const draft = currentDraft();
+      if (!draft.length) return "";
+      return `
+        <section class="cart">
+          <h2>담은 메뉴</h2>
+          <p class="quiet">수량은 모두 세고, 받을 금액은 직접 입력하거나 0원을 누릅니다.</p>
+          ${draft.map((line) => `
+            <article class="cart-line">
+              <div class="cart-top">
+                <strong>${esc(itemLabel(line))}</strong>
+                <span class="stepper">
+                  <button type="button" data-action="dec" data-key="${esc(line.key)}" aria-label="${esc(itemLabel(line))} 수량 줄이기">−</button>
+                  <b>${line.qty}</b>
+                  <button type="button" data-action="inc" data-key="${esc(line.key)}" aria-label="${esc(itemLabel(line))} 수량 늘리기">+</button>
+                </span>
+              </div>
+              <p class="quiet">정가 ${won(line.price)} · ${line.qty}개면 ${won(line.price * line.qty)}</p>
+              <div class="amount-row">
+                <input class="amount-input" inputmode="numeric" data-amount="${esc(line.key)}" value="${line.amount}" aria-label="${esc(itemLabel(line))} 받을 금액">
+                <button type="button" class="zero" data-action="zero" data-key="${esc(line.key)}">0원</button>
+                <button type="button" class="list-btn" data-action="list" data-key="${esc(line.key)}">정가</button>
+              </div>
+            </article>`).join("")}
+        </section>`;
+    }
+
+    function renderMenus() {
+      const draft = currentDraft();
+      const menus = MENU.filter((menu) => menu.cat === ui.cat).map((menu) => {
+        const picked = draft.some((line) => line.menuId === menu.id);
+        const options = menu.options && ui.optionFor === menu.id
+          ? `<div class="opts">${menu.options.map((opt) => `<button type="button" data-action="pick-option" data-id="${menu.id}" data-option="${esc(opt)}">${esc(opt)}</button>`).join("")}</div>`
+          : "";
         return `
-          <article class="table static ${kind}" aria-label="${n}번 테이블 ${esc(phaseLabel(n))}">
-            <div class="table-top">
-              <strong class="num">${n}</strong>
-              <span class="pill">${esc(phaseLabel(n))}</span>
-            </div>
-            <p class="seat">4인석</p>
-            ${kind === "empty" ? `<p class="hint">비어 있음</p>` : ""}
+          <article class="menu ${picked ? "picked" : ""}">
+            <button type="button" class="menu-main" data-action="add-item" data-id="${menu.id}">
+              <strong>${esc(menu.name)}</strong>
+              ${menu.desc ? `<span class="desc">${esc(menu.desc)}</span>` : ""}
+              <b>${won(menu.price)}</b>
+              <span class="desc">${menu.options ? (ui.optionFor === menu.id ? "종류 닫기" : "종류를 눌러 담기") : "눌러서 담기"}</span>
+            </button>
+            ${options}
           </article>`;
-      }
+      }).join("");
       return `
-        <article class="table ${kind}" data-action="open-table" data-table="${n}" role="button" tabindex="0" aria-label="${n}번 테이블 ${esc(phaseLabel(n))}">
-          <div class="table-top">
-            <strong class="num">${n}</strong>
-            <span class="pill">${esc(phaseLabel(n))}</span>
-          </div>
-          <p class="seat">4인석</p>
-          ${kind === "empty" ? `<p class="hint">터치해서 주문</p>` : `
-            <p class="amount">${tableTotal(n) > 0 ? won(tableTotal(n)) : "서비스"}</p>
-            <p class="meta">선결제${tableServiceAmount(n) > 0 ? ` · 서비스 ${won(tableServiceAmount(n))}` : ""}</p>
-            <p class="meta" data-elapsed="${opened}">${esc(elapsedLabel(opened))}</p>
-            <p class="summary">${esc(shortSummary(n))}</p>
-          `}
-        </article>`;
-    }
-
-    function renderHall() {
-      const busy = Array.from({ length: TABLE_COUNT }, (_, i) => i + 1).filter((n) => phase(n) !== "empty").length;
-      const cards = Array.from({ length: TABLE_COUNT }, (_, i) => renderTable(i + 1)).join("");
-      return `
-        <div class="view-head">
-          <div>
-            <h2>홀 현황</h2>
-            <p>${busy}팀 이용 중 · 테이블 ${TABLE_COUNT}개</p>
-          </div>
-          ${GUEST ? "" : `<a class="guest-link" href="?guest" target="_blank" rel="noopener">손님 화면</a>`}
+        <div class="cats" role="tablist" aria-label="메뉴 분류">
+          ${CATEGORIES.map((cat) => `<button type="button" data-action="set-cat" data-cat="${cat.id}" class="${ui.cat === cat.id ? "on" : ""}">${esc(cat.name)}</button>`).join("")}
         </div>
-        <ul class="legend">
-          <li><i class="dot empty"></i>빈 테이블</li>
-          <li><i class="dot active"></i>조리 대기 · 조리 중</li>
-          <li><i class="dot dining"></i>식사 중</li>
-        </ul>
-        <div class="tables">${cards}</div>`;
+        <div class="menus">${menus}</div>`;
     }
 
-    function renderQtyRows(item) {
-      const rows = [];
-      if (paidQty(item) > 0) {
-        rows.push(`<div class="k-item"><span>${esc(itemLabel(item))}</span><b>× ${paidQty(item)}</b></div>`);
-      }
-      if (freeQty(item) > 0) {
-        rows.push(`<div class="k-item"><span>${esc(itemLabel(item))} <em class="tag">서비스</em></span><b>× ${freeQty(item)}</b></div>`);
-      }
-      return rows.join("");
-    }
-
-    function renderKitchenCard(ticket) {
-      const items = ticket.items.map(renderQtyRows).join("");
-      const nextLabel = ticket.status === "waiting" ? "조리 시작" : "서빙 완료";
-      const action = ticket.status === "served"
-        ? `<button type="button" class="text-btn" data-action="kitchen-back" data-ticket="${esc(ticket.id)}">조리 중으로 되돌리기</button>`
-        : `<button type="button" class="primary wide" data-action="kitchen-next" data-ticket="${esc(ticket.id)}">${nextLabel}</button>
-           ${ticket.status === "cooking" ? `<button type="button" class="text-btn" data-action="kitchen-back" data-ticket="${esc(ticket.id)}">이전 단계</button>` : ""}`;
-      return `
-        <article class="k-card ${ticket.status}">
-          <div class="k-head">
-            <div>
-              <strong class="tno">${ticket.table}번</strong>
-              <div><span class="status">${esc(statusLabel(ticket.status))}</span></div>
-            </div>
-            <div class="when">
-              <div>접수 ${esc(hhmm(ticket.createdAt))}</div>
-              <div data-elapsed="${ticket.createdAt}">${esc(elapsedLabel(ticket.createdAt))}</div>
-            </div>
-          </div>
-          ${items}
-          ${action}
-        </article>`;
-    }
-
-    function renderKitchen() {
-      const active = state.tickets.filter((ticket) => ticket.status !== "served").sort((a, b) => a.createdAt - b.createdAt);
-      const done = state.tickets.filter((ticket) => ticket.status === "served").sort((a, b) => b.createdAt - a.createdAt);
-      return `
-        <div class="view-head">
-          <div>
-            <h2>주방·서빙</h2>
-            <p>오래된 주문부터 표시됩니다</p>
-          </div>
-          <button type="button" class="ghost" data-action="toggle-done" style="min-height:48px;padding:0 14px">${ui.showDone ? "완료 숨기기" : `서빙 완료 ${done.length}건 보기`}</button>
-        </div>
-        ${active.length ? `<div class="kds">${active.map(renderKitchenCard).join("")}</div>` : `<div class="empty-box">들어온 주문이 없습니다.</div>`}
-        ${ui.showDone ? `<h3 class="done-head">서빙 완료</h3><div class="kds">${done.length ? done.map(renderKitchenCard).join("") : `<div class="empty-box">완료된 주문이 없습니다.</div>`}</div>` : ""}`;
-    }
-
-    function renderMenuQty(sales) {
-      const counts = orderedQtyMap(sales);
-      return CATEGORIES.map((cat) => {
-        const rows = MENU.filter((menu) => menu.cat === cat.id).flatMap((menu) => {
+    function renderStats(day) {
+      const counts = menuStats(day);
+      const rows = CATEGORIES.map((cat) => {
+        const items = MENU.filter((menu) => menu.cat === cat.id).flatMap((menu) => {
           if (menu.options) {
             return menu.options.map((opt) => {
-              const found = counts.get(draftKey(menu.id, opt)) || { ordered: 0, service: 0, amount: 0 };
-              return { label: `${menu.name} (${opt})`, ordered: found.ordered, service: found.service, amount: found.amount || 0 };
+              const found = counts.get(lineKey(menu.id, opt)) || { qty: 0, amount: 0 };
+              return { label: `${menu.name} (${opt})`, qty: found.qty, amount: found.amount };
             });
           }
-          const found = counts.get(draftKey(menu.id, "")) || { ordered: 0, service: 0, amount: 0 };
-          return [{ label: menu.name, ordered: found.ordered || 0, service: found.service || 0, amount: found.amount || 0 }];
+          const found = counts.get(lineKey(menu.id, "")) || { qty: 0, amount: 0 };
+          return [{ label: menu.name, qty: found.qty, amount: found.amount }];
         });
         return `
           <h3 class="done-head">${esc(cat.name)}</h3>
-          <div class="ranks">${rows.map((row) => `
-            <article class="rank">
-              <b>${esc(row.label)}</b>
-              <strong>${row.ordered}개<span>${won(row.amount)}</span>${row.service ? `<small>서비스 ${row.service}개 · 0원</small>` : ""}</strong>
-            </article>
+          <div class="ranks">${items.map((row) => `
+            <article class="rank"><b>${esc(row.label)}</b><strong>${row.qty}개<span>${won(row.amount)}</span></strong></article>
           `).join("")}</div>`;
       }).join("");
-    }
-
-    function renderSales() {
-      const selected = activeSalesDay();
-      const sales = salesOn(selected);
-      const revenue = sales.reduce((sum, sale) => sum + sale.total, 0);
-      const festivalKeys = new Set(FESTIVAL_DAYS.map((day) => day.key));
-      const outside = state.sales.filter((sale) => !festivalKeys.has(dayKey(sale.paidAt))).length;
-      const dayMeta = FESTIVAL_DAYS.find((day) => day.key === selected);
-      const cards = FESTIVAL_DAYS.map((day) => {
-        const daySales = salesOn(day.key);
-        const dayRevenue = daySales.reduce((sum, sale) => sum + sale.total, 0);
-        const serviceQty = serviceQtyOf(daySales);
-        const todayMark = day.key === dayKey(Date.now()) ? " · 오늘" : "";
-        return `
-          <button type="button" class="day-card ${day.key === selected ? "on" : ""}" data-action="set-sales-day" data-day="${day.key}">
-            <span class="eyebrow">${day.label}${todayMark}</span>
-            <span class="day-date">${esc(dayTitle(day.key))}</span>
-            <b>${won(dayRevenue)}</b>
-            <small>판매 ${soldQtyOf(daySales)}개${serviceQty ? ` · 서비스 ${serviceQty}개` : ""}</small>
-          </button>`;
-      }).join("");
+      const orders = ordersOn(day);
+      const qty = orders.reduce((sum, order) => sum + order.items.reduce((itemSum, item) => itemSum + item.qty, 0), 0);
+      const total = orders.reduce((sum, order) => sum + order.total, 0);
       return `
-        <div class="view-head">
-          <div>
-            <h2>매출 통계</h2>
-            <p>${esc(dayMeta.label)} ${esc(dayTitle(selected))} · 서비스는 개수만 포함하고 금액은 0원</p>
-          </div>
-        </div>
-        <div class="day-cards">${cards}</div>
-        <h3 class="done-head">${esc(dayMeta.label)} 메뉴별 판매</h3>
-        ${renderMenuQty(sales)}
-        <div class="ranks">
-          <article class="rank total">
-            <b>합계</b>
-            <strong>${soldQtyOf(sales)}개<span>${won(revenue)}</span></strong>
-          </article>
-        </div>
-        ${outside ? `<p class="quiet" style="margin-top:12px">10월 1일·2일 밖 결제 ${outside}건은 일차 집계에 넣지 않았습니다.</p>` : ""}
-        <section class="panel danger-zone">
-          <h3>데이터 초기화</h3>
-          <p class="quiet" style="margin:8px 0 14px">축제가 끝나거나 테스트 주문을 지울 때 사용합니다. 확인 후에만 삭제됩니다.</p>
-          <button type="button" class="danger-btn wide" data-action="request-reset">전체 초기화</button>
-        </section>`;
-    }
-
-    function renderStepper(action, idAttr, key, qty) {
-      const label = action === "service" ? "서비스" : "유료";
-      return `
-        <span class="stepper">
-          <button type="button" data-action="dec-${action}" ${idAttr} data-key="${esc(key)}" aria-label="${label} 수량 줄이기">−</button>
-          <b>${qty}</b>
-          <button type="button" data-action="inc-${action}" ${idAttr} data-key="${esc(key)}" aria-label="${label} 수량 늘리기">+</button>
-        </span>`;
-    }
-
-    function renderLineControls(line) {
-      return `
-        <div class="step-row"><span>유료</span>${renderStepper("draft", "", line.key, paidQty(line))}</div>
-        <div class="step-row"><span>서비스</span>${renderStepper("service", "", line.key, freeQty(line))}</div>`;
-    }
-
-    function renderAccepted(table) {
-      const tickets = ticketsFor(table).slice().sort((a, b) => a.createdAt - b.createdAt);
-      if (!tickets.length) return "";
-      return `
-        <section class="accepted">
-          <h3>접수된 주문</h3>
-          ${tickets.map((ticket) => `
-            <article class="ticket">
-              <div class="table-top">
-                <span class="status">${esc(statusLabel(ticket.status))}</span>
-                <span class="quiet">${esc(hhmm(ticket.createdAt))}</span>
-              </div>
-              ${ticket.items.map((item) => `
-                <div class="line">
-                  <span>${esc(itemLabel(item))}</span>
-                  <span>${paidQty(item) ? `${won(item.price * paidQty(item))} · ${paidQty(item)}개` : ""}${paidQty(item) && freeQty(item) ? "<br>" : ""}${freeQty(item) ? `<em class="tag">서비스 ${freeQty(item)}</em>` : ""}</span>
-                </div>`).join("")}
-              ${ticket.status === "waiting" ? `<button type="button" class="text-btn" data-action="request-cancel" data-ticket="${esc(ticket.id)}">접수 취소</button>` : ""}
-            </article>`).join("")}
-          <p class="quiet">선결제된 주문입니다. 조리 시작 전에만 취소할 수 있습니다.</p>
-        </section>`;
-    }
-
-    function renderMenu(menu) {
-      const lines = ui.modal.draft.filter((item) => item.menuId === menu.id);
-      const qty = lines.reduce((sum, item) => sum + paidQty(item) + freeQty(item), 0);
-      const options = menu.options && ui.modal.optionFor === menu.id
-        ? `<div class="opts">${menu.options.map((opt) => `<button type="button" data-action="pick-option" data-id="${menu.id}" data-option="${esc(opt)}">${esc(opt)}</button>`).join("")}</div>`
-        : "";
-      const controls = menu.options
-        ? `${options}${lines.map((line) => `<div class="step-block"><span>${esc(line.option)}</span>${renderLineControls(line)}</div>`).join("")}`
-        : (qty ? renderLineControls(lines[0]) : "");
-      return `
-        <article class="menu ${qty ? "picked" : ""}">
-          <button type="button" class="menu-main" data-action="add-item" data-id="${menu.id}">
-            <strong>${esc(menu.name)}</strong>
-            ${menu.desc ? `<span class="desc">${esc(menu.desc)}</span>` : ""}
-            <b>${won(menu.price)}</b>
-            <span class="desc">${menu.options ? (ui.modal.optionFor === menu.id ? "종류 닫기" : "종류를 선택해 담기") : "눌러서 담기"}</span>
-          </button>
-          ${controls}
-        </article>`;
-    }
-
-    function renderModal() {
-      const modal = ui.modal;
-      const table = modal.table;
-      const accepted = tableTotal(table);
-      const extra = draftPaidTotal();
-      const service = draftServiceAmount();
-      const hasDraft = modal.draft.some((item) => paidQty(item) + freeQty(item) > 0);
-      const menus = MENU.filter((item) => item.cat === modal.cat).map(renderMenu).join("");
-      const draftLines = modal.draft.map((item) => `
-        <div class="line">
-          <span>${esc(itemLabel(item))}</span>
-          <span></span>
-        </div>
-        ${renderLineControls(item)}`).join("");
-      const orderFoot = `
-        ${draftLines ? `<div class="draft-list">${draftLines}</div>` : ""}
-        <div class="totals">
-          ${accepted ? `<div class="line"><span>이미 선결제</span><span>${won(accepted)}</span></div>` : ""}
-          ${service ? `<div class="line"><span>이번 서비스</span><span>${won(service)}</span></div>` : ""}
-          <div class="line grand"><span>이번 선결제</span><span>${won(extra)}</span></div>
-        </div>
-        ${hasDraft
-          ? (extra > 0
-            ? `<button type="button" class="pay wide" data-action="open-pay">선결제 ${won(extra)}</button>`
-            : `<button type="button" class="primary wide" data-action="request-service">서비스 주문 접수</button>`)
-          : (ticketsFor(table).length
-            ? `<button type="button" class="ghost wide" data-action="request-clear">테이블 비우기</button>`
-            : `<button type="button" class="primary wide" disabled>메뉴를 담아 주세요</button>`)}`;
-      const payBody = `
-        <p class="warn">선결제입니다. 입금을 확인한 뒤에 주방으로 전달됩니다.</p>
-        <ul class="bill">${modal.draft.flatMap((item) => {
-          const rows = [];
-          if (paidQty(item)) rows.push(`<li><span>${esc(itemLabel(item))} × ${paidQty(item)}</span><strong>${won(item.price * paidQty(item))}</strong></li>`);
-          if (freeQty(item)) rows.push(`<li><span>${esc(itemLabel(item))} × ${freeQty(item)} <em class="tag">서비스</em></span><strong>0원</strong></li>`);
-          return rows;
-        }).join("")}</ul>
-        <div class="totals">
-          ${service ? `<div class="line"><span>서비스</span><span>${won(service)}</span></div>` : ""}
-          <div class="line grand"><span>받을 금액</span><span>${won(extra)}</span></div>
-        </div>
-        <div class="pay-box">
-          <span class="bank">카카오페이 · 토스 계좌송금</span>
-          <div class="bank" style="margin-top:8px">${ACCOUNT.bank} · ${ACCOUNT.holder}</div>
-          <strong class="acct-no">${ACCOUNT.number}</strong>
-          <p class="quiet" style="margin-top:8px">손님 앱에서 위 계좌로 먼저 송금받은 뒤 결제 완료를 눌러 주세요.</p>
-          <button type="button" class="copy-btn" style="margin-top:12px" data-action="copy">계좌 복사</button>
+        <h2 class="done-head">메뉴별 판매</h2>
+        ${rows}
+        <div class="ranks" style="margin-top:10px">
+          <article class="rank total"><b>합계</b><strong>${qty}개<span>${won(total)}</span></strong></article>
         </div>`;
-      const payFoot = `
-        <div class="foot-actions">
-          <button type="button" class="ghost" data-action="back-order">주문으로</button>
-          <button type="button" class="pay" data-action="request-pay">결제 완료 · 주문 접수</button>
-        </div>`;
+    }
+
+    function renderOrders(day) {
+      const orders = ordersOn(day).slice().sort((a, b) => b.at - a.at);
+      if (!orders.length) return "";
       return `
-        <div class="overlay">
-          <section class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
-            <div class="modal-head">
-              <div>
-                <p class="eyebrow">${table}번 테이블</p>
-                <h2 id="modal-title">${modal.mode === "pay" ? "선결제" : (ticketsFor(table).length ? "추가 주문" : "새 주문")}</h2>
-              </div>
-              <button type="button" class="ghost" data-action="close-modal" style="min-width:72px">닫기</button>
-            </div>
-            <div class="modal-body">
-              ${modal.mode === "pay" ? payBody : `
-                ${renderAccepted(table)}
-                <div class="cats">
-                  ${CATEGORIES.map((cat) => `<button type="button" data-action="set-cat" data-cat="${cat.id}" class="${modal.cat === cat.id ? "on" : ""}">${esc(cat.name)}</button>`).join("")}
-                </div>
-                <div class="menus">${menus}</div>
-              `}
-            </div>
-            <div class="modal-foot">${modal.mode === "pay" ? payFoot : orderFoot}</div>
-          </section>
-        </div>`;
+        <h3 class="done-head">접수한 주문</h3>
+        <section class="panel orders">${orders.map((order) => {
+          const name = order.items[0] ? itemLabel(order.items[0]) : "주문";
+          const extra = order.items.length > 1 ? ` 외 ${order.items.length - 1}` : "";
+          return `
+            <article class="order">
+              <span>${esc(hhmm(order.at))} · ${esc(name + extra)}<br><strong>${won(order.total)}</strong></span>
+              <button type="button" class="text-btn" data-action="ask-cancel" data-id="${esc(order.id)}">취소</button>
+            </article>`;
+        }).join("")}</section>`;
     }
 
     function renderConfirm() {
       const confirm = ui.confirm;
+      if (!confirm) return "";
       return `
-        <div class="overlay confirm-overlay">
+        <div class="overlay">
           <section class="confirm" role="alertdialog" aria-modal="true" aria-labelledby="confirm-title">
             <h3 id="confirm-title">${esc(confirm.title)}</h3>
             <p>${esc(confirm.message)}</p>
@@ -1502,118 +882,151 @@
         </div>`;
     }
 
+    function renderDock() {
+      const draft = currentDraft();
+      if (!draft.length) return "";
+      return `
+        <div class="dock">
+          <div class="wrap">
+            <div>
+              <span class="quiet">받을 금액</span>
+              <b id="cart-total">${won(cartTotal())}</b>
+            </div>
+            <button type="button" class="pay" data-action="ask-submit">주문 접수</button>
+          </div>
+        </div>`;
+    }
+
     function render() {
-      const y = window.scrollY;
-      const modalScroll = document.querySelector(".modal-body")?.scrollTop || 0;
-      if (GUEST) {
-        ui.view = "hall";
-        ui.modal = null;
-        ui.confirm = null;
-      }
-      const main = ui.view === "kitchen" ? renderKitchen() : ui.view === "sales" ? renderSales() : renderHall();
-      document.getElementById("app").innerHTML = `${renderHeader()}<main class="wrap">${main}</main>${ui.modal ? renderModal() : ""}${ui.confirm ? renderConfirm() : ""}`;
-      document.body.classList.toggle("modal-open", Boolean(ui.modal || ui.confirm));
-      window.scrollTo(0, y);
-      const body = document.querySelector(".modal-body");
-      if (body) body.scrollTop = modalScroll;
+      const day = activeDay();
+      ui.day = day;
+      const meta = FESTIVAL_DAYS.find((item) => item.key === day);
+      document.getElementById("app").innerHTML = `
+        ${renderHeader()}
+        <main class="wrap">
+          <h2>${esc(meta.label)} 주문</h2>
+          <p class="quiet">${esc(dayTitle(day))} · 할인은 금액을 고치고, 무료는 0원입니다.</p>
+          ${renderCart()}
+          ${renderMenus()}
+          ${renderStats(day)}
+          ${renderOrders(day)}
+          <section class="panel danger-zone">
+            <h3>데이터 초기화</h3>
+            <p class="quiet" style="margin:8px 0 14px">1일차와 2일차 접수가 모두 삭제됩니다.</p>
+            <button type="button" class="danger-btn" data-action="ask-reset">전체 초기화</button>
+          </section>
+        </main>
+        ${renderDock()}
+        ${renderConfirm()}`;
+      document.body.classList.toggle("modal-open", Boolean(ui.confirm));
     }
 
     function onClick(event) {
       const btn = event.target.closest("[data-action]");
-      if (!btn || btn.disabled) return;
+      if (!btn) return;
       const action = btn.dataset.action;
-      if (action === "nav") {
-        ui.view = btn.dataset.view;
-        ui.modal = null;
+      if (action === "set-day") {
+        ui.day = btn.dataset.day;
+        ui.optionFor = "";
         ui.confirm = null;
         render();
-      } else if (action === "set-sales-day") {
-        ui.salesDay = btn.dataset.day;
+      } else if (action === "set-cat") {
+        ui.cat = btn.dataset.cat;
+        ui.optionFor = "";
         render();
-      } else if (action === "open-table") {
-        openTable(Number(btn.dataset.table));
-      } else if (action === "close-modal") {
-        ui.modal = null;
-        render();
-      } else if (action === "set-cat" && ui.modal) {
-        ui.modal.cat = btn.dataset.cat;
-        ui.modal.optionFor = "";
-        render();
-      } else if (action === "add-item" && ui.modal) {
+      } else if (action === "add-item") {
         const menu = MENU.find((item) => item.id === btn.dataset.id);
         if (!menu) return;
         if (menu.options) {
-          ui.modal.optionFor = ui.modal.optionFor === menu.id ? "" : menu.id;
+          ui.optionFor = ui.optionFor === menu.id ? "" : menu.id;
           render();
           return;
         }
-        addDraft(menu.id, "");
+        addLine(menu.id, "");
         render();
-      } else if (action === "pick-option" && ui.modal) {
-        addDraft(btn.dataset.id, btn.dataset.option);
-        ui.modal.optionFor = "";
+      } else if (action === "pick-option") {
+        addLine(btn.dataset.id, btn.dataset.option);
+        ui.optionFor = "";
         render();
-      }       else if (action === "inc-draft") changeDraft(btn.dataset.key, "qty", 1);
-      else if (action === "dec-draft") changeDraft(btn.dataset.key, "qty", -1);
-      else if (action === "inc-service") changeDraft(btn.dataset.key, "serviceQty", 1);
-      else if (action === "dec-service") changeDraft(btn.dataset.key, "serviceQty", -1);
-      else if (action === "request-service") requestServiceOrder();
-      else if (action === "request-clear") requestClear();
-      else if (action === "request-cancel") requestCancel(btn.dataset.ticket);
-      else if (action === "open-pay" && ui.modal) {
-        ui.modal.mode = "pay";
+      } else if (action === "inc") {
+        changeQty(btn.dataset.key, 1);
         render();
-      } else if (action === "back-order" && ui.modal) {
-        ui.modal.mode = "order";
+      } else if (action === "dec") {
+        changeQty(btn.dataset.key, -1);
         render();
-      } else if (action === "request-pay") requestPay();
-      else if (action === "copy") copyAccount();
-      else if (action === "kitchen-next") advanceTicket(btn.dataset.ticket);
-      else if (action === "kitchen-back") backTicket(btn.dataset.ticket);
-      else if (action === "toggle-done") {
-        ui.showDone = !ui.showDone;
+      } else if (action === "zero") {
+        setAmount(btn.dataset.key, 0, true);
         render();
-      } else if (action === "request-reset") requestReset();
-      else if (action === "confirm-no") {
+      } else if (action === "list") {
+        setAmount(btn.dataset.key, 0, false);
+        render();
+      } else if (action === "ask-submit") {
+        const day = FESTIVAL_DAYS.find((item) => item.key === activeDay());
+        ui.confirm = {
+          title: `${day.label} 주문 접수`,
+          message: `${won(cartTotal())}으로 접수합니다. 수량은 그대로 집계되고, 입력한 금액이 매출입니다.`,
+          yes: "주문 접수",
+          danger: false,
+          run: submitOrder
+        };
+        render();
+      } else if (action === "ask-cancel") {
+        const orderId = btn.dataset.id;
+        ui.confirm = {
+          title: "접수 취소",
+          message: "이 접수를 취소하면 수량과 금액이 함께 빠집니다.",
+          yes: "접수 취소",
+          danger: true,
+          run: () => cancelOrder(orderId)
+        };
+        render();
+      } else if (action === "ask-reset") {
+        ui.confirm = {
+          title: "전체 초기화",
+          message: "1일차와 2일차 접수가 모두 삭제됩니다. 삭제한 데이터는 되돌릴 수 없습니다.",
+          yes: "전체 삭제",
+          danger: true,
+          run: resetAll
+        };
+        render();
+      } else if (action === "confirm-no") {
         ui.confirm = null;
         render();
-      } else if (action === "confirm-yes") confirmYes();
+      } else if (action === "confirm-yes") {
+        const run = ui.confirm && ui.confirm.run;
+        ui.confirm = null;
+        if (run) run();
+        else render();
+      } else if (action === "copy") copyAccount();
     }
 
-    function onKey(event) {
-      if (event.key !== "Enter" && event.key !== " ") return;
-      const tag = event.target.tagName;
-      if (tag === "TEXTAREA" || tag === "INPUT" || tag === "BUTTON") return;
-      const el = event.target.closest("[data-action]");
-      if (!el) return;
-      event.preventDefault();
-      el.click();
+    function onAmount(event) {
+      const input = event.target.closest("[data-amount]");
+      if (!input) return;
+      const digits = String(input.value).replace(/[^\d]/g, "");
+      const line = currentDraft().find((item) => item.key === input.dataset.amount);
+      if (!line) return;
+      line.amount = digits === "" ? 0 : Math.min(9999999, Number(digits));
+      line.custom = true;
+      if (input.value !== digits) input.value = digits;
+      const total = document.getElementById("cart-total");
+      if (total) total.textContent = won(cartTotal());
     }
 
-    function tick() {
-      const clock = document.getElementById("clock");
-      if (clock) clock.textContent = hhmm(Date.now());
-      document.querySelectorAll("[data-elapsed]").forEach((node) => {
-        node.textContent = elapsedLabel(Number(node.dataset.elapsed));
-      });
-    }
-
+    rememberBundle();
     const app = document.getElementById("app");
     app.addEventListener("click", onClick);
-    app.addEventListener("keydown", onKey);
-    window.addEventListener("storage", (event) => {
-      if (event.key !== STORAGE_KEY) return;
-      rememberBundle();
-      render();
-    });
+    app.addEventListener("input", onAmount);
     render();
-    setInterval(tick, 1000);
+    setInterval(() => {
+      const clock = document.getElementById("clock");
+      if (clock) clock.textContent = hhmm(Date.now());
+    }, 1000);
     enqueue(async () => {
       try {
-        if (!GUEST) await pushPending();
+        await pushPending();
         await pull();
       } catch (err) {
-        online = false;
         syncLabel = "연결을 다시 시도하는 중";
         paintSync();
       }
@@ -1621,10 +1034,9 @@
     setInterval(() => {
       enqueue(async () => {
         try {
-          if (!GUEST) await pushPending();
+          await pushPending();
           await pull();
         } catch (err) {
-          online = false;
           syncLabel = "연결을 다시 시도하는 중";
           paintSync();
         }
