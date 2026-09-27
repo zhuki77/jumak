@@ -214,6 +214,9 @@
     .ranks { margin-top: 12px; }
     .rank { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
     .rank b { font-size: 1.15rem; }
+    .rank strong { text-align: right; font-variant-numeric: tabular-nums; }
+    .rank strong span { display: block; margin-top: 2px; }
+    .rank.total { border-color: var(--orange); }
     .recent { margin-top: 12px; display: grid; gap: 8px; }
     .recent li, .bill li, .accepted li { list-style: none; }
     .recent ul, .bill, .accepted ul, .legend { padding: 0; }
@@ -903,8 +906,8 @@
       return state.sales.filter((sale) => dayKey(sale.paidAt) === key);
     }
 
-    function serviceAmountOf(sales) {
-      return sales.reduce((sum, sale) => sum + sale.items.reduce((itemSum, item) => itemSum + item.price * freeQty(item), 0), 0);
+    function serviceQtyOf(sales) {
+      return sales.reduce((sum, sale) => sum + sale.items.reduce((itemSum, item) => itemSum + freeQty(item), 0), 0);
     }
 
     function soldQtyOf(sales) {
@@ -916,9 +919,10 @@
       sales.forEach((sale) => {
         sale.items.forEach((item) => {
           const key = draftKey(item.menuId, item.option);
-          const prev = map.get(key) || { ordered: 0, service: 0 };
+          const prev = map.get(key) || { ordered: 0, service: 0, amount: 0 };
           prev.ordered += paidQty(item) + freeQty(item);
           prev.service += freeQty(item);
+          prev.amount += item.price * paidQty(item);
           map.set(key, prev);
         });
       });
@@ -1285,16 +1289,20 @@
         const rows = MENU.filter((menu) => menu.cat === cat.id).flatMap((menu) => {
           if (menu.options) {
             return menu.options.map((opt) => {
-              const found = counts.get(draftKey(menu.id, opt)) || { ordered: 0, service: 0 };
-              return { label: `${menu.name} (${opt})`, ordered: found.ordered, service: found.service };
+              const found = counts.get(draftKey(menu.id, opt)) || { ordered: 0, service: 0, amount: 0 };
+              return { label: `${menu.name} (${opt})`, ordered: found.ordered, service: found.service, amount: found.amount || 0 };
             });
           }
-          return [{ label: menu.name, ordered: (counts.get(draftKey(menu.id, "")) || {}).ordered || 0, service: (counts.get(draftKey(menu.id, "")) || {}).service || 0 }];
+          const found = counts.get(draftKey(menu.id, "")) || { ordered: 0, service: 0, amount: 0 };
+          return [{ label: menu.name, ordered: found.ordered || 0, service: found.service || 0, amount: found.amount || 0 }];
         });
         return `
           <h3 class="done-head">${esc(cat.name)}</h3>
           <div class="ranks">${rows.map((row) => `
-            <article class="rank"><b>${esc(row.label)}</b><strong>${row.ordered}개${row.service ? `<small>서비스 ${row.service}</small>` : ""}</strong></article>
+            <article class="rank">
+              <b>${esc(row.label)}</b>
+              <strong>${row.ordered}개<span>${won(row.amount)}</span>${row.service ? `<small>서비스 ${row.service}개 · 0원</small>` : ""}</strong>
+            </article>
           `).join("")}</div>`;
       }).join("");
     }
@@ -1303,48 +1311,39 @@
       const selected = activeSalesDay();
       const sales = salesOn(selected);
       const revenue = sales.reduce((sum, sale) => sum + sale.total, 0);
-      const recent = sales.slice().sort((a, b) => b.paidAt - a.paidAt).slice(0, 8);
       const festivalKeys = new Set(FESTIVAL_DAYS.map((day) => day.key));
       const outside = state.sales.filter((sale) => !festivalKeys.has(dayKey(sale.paidAt))).length;
       const dayMeta = FESTIVAL_DAYS.find((day) => day.key === selected);
       const cards = FESTIVAL_DAYS.map((day) => {
         const daySales = salesOn(day.key);
         const dayRevenue = daySales.reduce((sum, sale) => sum + sale.total, 0);
-        const service = serviceAmountOf(daySales);
+        const serviceQty = serviceQtyOf(daySales);
         const todayMark = day.key === dayKey(Date.now()) ? " · 오늘" : "";
         return `
           <button type="button" class="day-card ${day.key === selected ? "on" : ""}" data-action="set-sales-day" data-day="${day.key}">
             <span class="eyebrow">${day.label}${todayMark}</span>
             <span class="day-date">${esc(dayTitle(day.key))}</span>
             <b>${won(dayRevenue)}</b>
-            <small>판매 ${soldQtyOf(daySales)}개 · 주문 ${daySales.length}건${service ? ` · 서비스 ${won(service)}` : ""}</small>
+            <small>판매 ${soldQtyOf(daySales)}개${serviceQty ? ` · 서비스 ${serviceQty}개` : ""}</small>
           </button>`;
       }).join("");
       return `
         <div class="view-head">
           <div>
             <h2>매출 통계</h2>
-            <p>${esc(dayMeta.label)} ${esc(dayTitle(selected))} · 선결제 기준, 서비스는 매출에서 제외</p>
+            <p>${esc(dayMeta.label)} ${esc(dayTitle(selected))} · 서비스는 개수만 포함하고 금액은 0원</p>
           </div>
         </div>
         <div class="day-cards">${cards}</div>
-        <section class="stats">
-          <article class="stat"><span>${esc(dayMeta.label)} 매출</span><b>${won(revenue)}</b></article>
-          <article class="stat"><span>주문 건수</span><b>${sales.length}건</b></article>
-          <article class="stat"><span>판매 수량</span><b>${soldQtyOf(sales)}개</b></article>
-          <article class="stat"><span>서비스 금액</span><b>${won(serviceAmountOf(sales))}</b></article>
-        </section>
-        <h3 class="done-head">${esc(dayMeta.label)} 메뉴별 주문 수량</h3>
+        <h3 class="done-head">${esc(dayMeta.label)} 메뉴별 판매</h3>
         ${renderMenuQty(sales)}
+        <div class="ranks">
+          <article class="rank total">
+            <b>합계</b>
+            <strong>${soldQtyOf(sales)}개<span>${won(revenue)}</span></strong>
+          </article>
+        </div>
         ${outside ? `<p class="quiet" style="margin-top:12px">10월 1일·2일 밖 결제 ${outside}건은 일차 집계에 넣지 않았습니다.</p>` : ""}
-        <h3 class="done-head">${esc(dayMeta.label)} 최근 결제</h3>
-        ${recent.length ? `<div class="panel recent"><ul>${recent.map((sale) => {
-          const name = sale.items[0] ? itemLabel(sale.items[0]) : "주문";
-          const extra = sale.items.length > 1 ? ` 외 ${sale.items.length - 1}` : "";
-          const serviceN = sale.items.reduce((sum, item) => sum + freeQty(item), 0);
-          const money = sale.total > 0 ? won(sale.total) : "서비스";
-          return `<li><span>${sale.table}번 · ${esc(name + extra)}</span><strong>${money}${serviceN && sale.total > 0 ? " · 서비스 포함" : ""} · ${esc(hhmm(sale.paidAt))}</strong></li>`;
-        }).join("")}</ul></div>` : `<div class="empty-box">결제 내역이 없습니다.</div>`}
         <section class="panel danger-zone">
           <h3>데이터 초기화</h3>
           <p class="quiet" style="margin:8px 0 14px">축제가 끝나거나 테스트 주문을 지울 때 사용합니다. 확인 후에만 삭제됩니다.</p>
